@@ -1,0 +1,11 @@
+This directory is reserved for firmware components built or modified for
+the HY300 Lite (fenix). No components have been added yet.
+
+When components are added, each one keeps the license of the code it was
+built from (for example, U-Boot is GPL-2.0-or-later). The corresponding
+source code and the licensing information for each component will be
+documented here at that time.
+
+Third-party binary blobs, if any are used (for example, from Rockchip's
+rkbin), are not covered by that license. They keep their own terms and
+will be listed here when added.

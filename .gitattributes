@@ -1,0 +1,9 @@
+# All firmware payloads use Git LFS by default.
+firmware/** filter=lfs diff=lfs merge=lfs -text
+
+# Keep licensing notices readable in the repository.
+firmware/**/NOTICE -filter -diff -merge text
+
+# Keep empty directory placeholders as normal Git files.
+/kernel/.gitkeep -filter -diff -merge text
+/uboot/.gitkeep -filter -diff -merge text

@@ -1,0 +1,14 @@
+# Kernel artifacts
+/kernel/out/
+*.o
+*.ko
+*.mod
+*.mod.c
+*.cmd
+Module.symvers
+modules.order
+System.map
+vmlinux
+
+# Local Android properties dump (contains network-specific information)
+/docs/dumps-txt/getprop.txt
