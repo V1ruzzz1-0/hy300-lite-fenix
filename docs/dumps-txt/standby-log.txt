@@ -1,0 +1,99 @@
+DDR V2.07 20220531
+In
+LP3,1024MB,333MHz
+bw      col     bk      row     cs      dbw
+32      10      8       14      2       32
+cs1 row:14
+OUT
+Boot1 Release Time: Jan 17 2022 10:48:40, version: 1.35
+ROM VER:0x56313030, 18
+hamming_distance:3326 3330 3
+chip_id:524b3326_0,0
+ChipType = 0x12, 777
+mmc2:cmd19,100
+SdmmcInit=2 0
+BootCapSize=2000
+UserCapSize=7456MB
+FwPartOffset=2000 , 2000
+SdmmcInit=0 NOT PRESENT
+StorageInit ok = 37454
+SecureMode = 0
+Secure read PBA: 0x4
+Secure read PBA: 0x404
+Secure read PBA: 0x804
+Secure read PBA: 0xc04
+Secure read PBA: 0x1004
+SecureInit ret = 0, SecureMode = 0
+atags_set_bootdev: ret:(0)
+GPT part:  0, name:         security, start:0x2000, size:0x2000
+GPT part:  1, name:            uboot, start:0x4000, size:0x2000
+GPT part:  2, name:            trust, start:0x6000, size:0x2000
+GPT part:  3, name:             misc, start:0x8000, size:0x2000
+GPT part:  4, name:             dtbo, start:0xa000, size:0x2000
+GPT part:  5, name:           vbmeta, start:0xc000, size:0x800
+GPT part:  6, name:             boot, start:0xc800, size:0x18c4b
+GPT part:  7, name:         recovery, start:0x2544b, size:0x30000
+GPT part:  8, name:           backup, start:0x5544b, size:0xc0000
+GPT part:  9, name:            cache, start:0x11544b, size:0xc0000
+GPT part: 10, name:         metadata, start:0x1d544b, size:0x8000
+GPT part: 11, name:    baseparameter, start:0x1dd44b, size:0x800
+GPT part: 12, name:             zoom, start:0x1ddc4b, size:0x5000
+GPT part: 13, name:            super, start:0x1e2c4b, size:0x4b0000
+GPT part: 14, name:         userdata, start:0x692c4b, size:0x7fd375
+find part:uboot OK. first_lba:0x4000.
+find part:trust OK. first_lba:0x6000.
+LoadTrust Addr:0x6000
+No find bl30.bin
+Load uboot, ReadLba = 4000
+Load OK, addr=0x200000, size=0xfe4c0
+RunBL31 0x40000 @ 106996 us
+INFO:    Preloader serial: 2
+NOTICE:  BL31: v2.3():v2.3-380-g244acd212:huan.he
+NOTICE:  BL31: Built : 14:34:08, Jun  8 2022
+NOTICE:  BL31:Rockchip release version: v1.0
+INFO:    ARM GICv2 driver initialized
+INFO:    Using opteed sec cpu_context!
+INFO:    boot cpu mask: 1
+INFO:    plat_rockchip_pmu_init: pd status f00e
+INFO:    BL31: Initializing runtime services
+INFO:    BL31: Initializing BL32
+I/TC: 
+I/TC: OP-TEE version: 3.13.0-641-g4167319d3 #hisping.lin (gcc version 10.2.1 20201103 (GNU Toolchain for the A-profile Architecture 10.2-2020.11 (arm-10.16))) #9 Wed Mar 16 17:44:01 CST 2022 aarch64
+I/TC: Primary CPU initializing
+I/TC: Primary CPU switching to normal world boot
+INFO:    BL31: Preparing for EL3 exit to normal world
+INFO:    Entry point address = 0x200000
+INFO:    SPSR = 0x3c9
+
+
+U-Boot 2017.09-gc64a9d0a12-220615 #penggw (Dec 09 2025 - 16:35:08 +0800)
+
+Model: Rockchip RK3326 EVB
+PreSerial: 2, raw, 0xff160000
+DRAM:  1014 MiB
+Sysmem: init
+Relocation Offset: 3db7a000
+Relocation fdt: 3bd6f120 - 3bd70cce
+CR: M/C/I
+Using default environment
+
+DM: v1
+dwmmc@ff370000: 1, dwmmc@ff390000: 0
+Best phase range 12-270 (24 len)
+Successfully tuned phase to 147, used 1ms
+Bootdev(atags): mmc 0
+MMC0: HS200, 150Mhz
+PartType: EFI
+boot mode: None
+Android 11.0, Build 2021.10, v2
+Found DTB in boot part
+DTB: rk-kernel.dtb
+HASH(c): OK
+ANDROID: fdt overlay OK
+I2c0 speed: 100000Hz
+PMIC:  RK8170 (on=0x40, off=0x00)
+vdd_logic 1100000 uV
+vdd_arm 1100000 uV
+warning: bad baseparameter
+Model: Rockchip rk3326 863 board
+@@@cptp---board_late_init,,,,,key_flag=1
