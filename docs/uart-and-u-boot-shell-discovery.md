@@ -12,15 +12,47 @@ However, while soldering, I noticed 3 exposed pins with the following labels:
 - TX: apparently the UART transmitter
 - RX: apparently the UART receiver
 
-So I decided to connect my ESP32-C3 (which is running USB-TTL firmware) to those pins to check whether there were any logs. However, I had to use a Python script to find the correct speed for this port, and the answer was: 1500000 baud.
+So I decided to connect my ESP32-C3 (which is running USB-TTL firmware) to those pins to check whether there were any logs. However, I had to use a Python script to find the correct speed for this port, and the answer was: 1502347 baud.
 
 Then I checked the logs, and apparently, with Android already booted, this is what showed up:
 
 ---
 
-[ 132.775344] read strings
-[ 133.818165] read descriptors
-[ 133.818480] read strings
+SYS-CORE% picocom -b 1502347 /dev/ttyACM0 
+picocom v3.1 
+ 
+port is        : /dev/ttyACM0 
+flowcontrol    : none 
+baudrate is    : 1502347 
+parity is      : none 
+databits are   : 8 
+stopbits are   : 1 
+escape is      : C-a 
+local echo is  : no 
+noinit is      : no 
+noreset is     : no 
+hangup is      : no 
+nolock is      : no 
+send_cmd is    : sz -vv 
+receive_cmd is : rz -vv -E 
+imap is        :  
+omap is        :  
+emap is        : crcrlf,delbs, 
+logfile is     : none 
+initstring     : none 
+exit_after is  : not set 
+exit is        : no 
+ 
+Type [C-a] [C-h] to see available commands 
+Terminal ready 
+[  132.775344] read strings 
+[  133.818165] read descriptors 
+[  133.818480] read strings 
+[  134.861754] read descriptors 
+[  134.862068] read strings 
+[  135.908716] read descriptors 
+[  135.909062] read strings 
+[  136.948259] read descriptors 
 
 ---
 
