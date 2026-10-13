@@ -1,0 +1,29 @@
+=> help ums
+ums - Use the UMS [USB Mass Storage]
+
+Usage:
+ums <USB_controller> [<devtype>] <dev[:part]>  e.g. ums 0 mmc 0
+    devtype defaults to mmc
+=> mmc list
+dwmmc@ff370000: 1
+dwmmc@ff390000: 0 (eMMC)
+=> mmc info
+Device: dwmmc@ff390000
+Manufacturer ID: 15
+OEM: 100
+Name: QNW00 
+Timing Interface: HS200
+Tran Speed: 150000000
+Rd Block Len: 512
+MMC version 5.0
+High Capacity: Yes
+Capacity: 7.3 GiB
+Bus Width: 8-bit
+Erase Group Size: 512 KiB
+HC WP Group Size: 8 MiB
+User Capacity: 7.3 GiB WRREL
+Boot Capacity: 4 MiB ENH
+RPMB Capacity: 512 KiB ENH
+=> ums 0 mmc 0 
+UMS: LUN 0, dev 0, hwpart 0, sector 0x0, count 0xe90000
+/

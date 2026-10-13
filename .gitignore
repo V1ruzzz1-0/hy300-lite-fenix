@@ -12,3 +12,11 @@ vmlinux
 
 # Local Android properties dump (contains network-specific information)
 /docs/dumps-txt/getprop.txt
+
+# fenix-dump runtime artifacts
+/tools/fenix-dump.log
+/tools/__pycache__/
+/tools/**/*.py[cod]
+/tools/**/*.img
+/tools/**/*.img.sha256
+/tools/**/*.img.part*
