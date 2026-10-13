@@ -12,18 +12,18 @@ However, while soldering, I noticed 3 exposed pins with the following labels:
 - TX: apparently the UART transmitter
 - RX: apparently the UART receiver
 
-So I decided to connect my ESP32-C3 (which is running USB-TTL firmware) to those pins to check whether there were any logs. However, I had to use a Python script to find the correct speed for this port, and the answer was: 1502347 baud.
+So I decided to connect my ESP32-C3 (which is running USB-TTL firmware) to those pins to check whether there were any logs. However, I had to use a Python script to find the correct speed for this port, and the answer was: 1502347 baud. # INVALID BAULD!!!
 
 Then I checked the logs, and apparently, with Android already booted, this is what showed up:
 
 ---
 
-SYS-CORE% picocom -b 1502347 /dev/ttyACM0 
+SYS-CORE% picocom -b 1502347 /dev/ttyACM0 # INVALID BAULD!!! 
 picocom v3.1 
  
 port is        : /dev/ttyACM0 
 flowcontrol    : none 
-baudrate is    : 1502347 
+baudrate is    : 1502347 # INVALID BAULD!!!
 parity is      : none 
 databits are   : 8 
 stopbits are   : 1 
@@ -97,5 +97,11 @@ So, apparently, in the developer settings, even though it's Android 11, there's 
 The idea would be to change the boot parameters in U-Boot so we have ADB access over UART (not just repeated logs).
 
 And yes, I already tried interrupting the logs with Android already loaded, but without success.
+
+# Update
+
+I made a mistake assuming the real speed was '1502347', but apparently my ESP32-C3's firmware had a BUG that misreported the speed. After rewriting it with some simple logic, I got a more reliable result: 1500000 (one of the common speeds used by the Rockchip FIQ Debugger, but since it's the only one that worked, I wouldn't be sure it's exactly that driver. Given the kernel version, 4.19, it's very likely used, though I haven't confirmed it yet).
+
+So I'll use this speed as a baseline from now on, but I'm still not treating it as certain: since the previous information was wrong, this one might be too, so I prefer to be sure only once I have a dedicated TTL adapter (such as an FT232XX).
 
 / -- /

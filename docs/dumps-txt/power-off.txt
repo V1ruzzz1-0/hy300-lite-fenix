@@ -1,0 +1,184 @@
+[  195.112601] type=1400 audit(1765274783.783:65): avc: denied { read } for comm="Binder:152_2" name="wakeup7" dev="sysfs" ino=19059 scontext=u:r:system_suspend:s0 tcontext=u:object_r:sysfs:s0 tclass=dir permissive=1
+[  195.115274] type=1400 audit(1765274783.783:66): avc: denied { open } for comm="Binder:152_2" path="/sys/devices/platform/ff200000.pwm/wakeup/wakeup7" dev="sysfs" ino=19059 scontext=u:r:system_suspend:s0 tcontext=u:object_r:sysfs:s0 tclass=dir permissive=1
+[  195.122812] type=1400 audit(1765274783.783:67): avc: denied { read } for comm="Binder:152_2" name="event_count" dev="sysfs" ino=19066 scontext=u:r:system_suspend:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[  195.126532] type=1400 audit(1765274783.783:68): avc: denied { open } for comm="Binder:152_2" path="/sys/devices/platform/ff200000.pwm/wakeup/wakeup7/event_count" dev="sysfs" ino=19066 scontext=u:r:system_suspend:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[  195.129122] type=1400 audit(1765274783.783:69): avc: denied { getattr } for comm="Binder:152_2" path="/sys/devices/platform/ff200000.pwm/wakeup/wakeup7/event_count" dev="sysfs" ino=19066 scontext=u:r:system_suspend:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[  195.417139] healthd: battery l=90 v=4000 t=18.8 h=2 st=3 c=0 fc=4000000 chg=
+[  195.489501] 
+[  195.489501] @@@cptp--------panel_simple_disable
+[  195.821211] read descriptors
+[  195.821530] read strings
+[  195.859770] init: Received sys.powerctl='shutdown,' from pid: 390 (system_server)
+[  195.861537] init: cptp---bl_gpio OK opening file: Try again
+[  195.861541] type=1400 audit(1765274784.533:70): avc: denied { read } for comm="init" name="bl" dev="sysfs" ino=18950 scontext=u:r:init:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=1
+[  195.865078] init: Clear action queue and start shutdown trigger
+[  195.865970] init: Entering shutdown mode
+[  195.866692] init: Reboot start, reason: shutdown,, reboot_target: 
+[  195.867604] init: Shutdown timeout: 0 ms
+[  195.868074] init: Create reboot monitor thread.
+[  195.869610] init: shutdown_timeout_timespec.tv_sec: 495
+[  195.907613] init: Could not start shutdown 'to_start' service 'watchdogd': Cannot find '/sbin/watchdogd': No such file or directory
+[  195.910061] init: starting service 'blank_screen'...
+[  196.012141] Exit. P2P interface stopped
+[  196.028732] aicwf_sdio mmc1:6d38:1 wlan0: CLOSE
+[  196.030371] rwnx_send_msg1 (9)MM_REMOVE_IF_CFM reqcfm:1 in_irq:0 in_softirq:0 in_atomic:0
+[  196.051187] ieee80211 phy0: HT supp 1, VHT supp 1, HE supp 1
+[  196.062191] binder: release 315:315 transaction 79801 in, still active
+[  196.077580] binder: send failed reply for transaction 79801 to 390:474
+[  196.422222] binder: release 249:249 transaction 79999 in, still active
+[  196.422874] binder: send failed reply for transaction 79999 to 390:450
+[  196.618027] rockchip-vop ff460000.vop: [drm:vop_crtc_atomic_enable] Update mode to 1024x600p59, type: 7
+[  196.622600] binder: 154:745 transaction failed 29189/-22, size 84-0 line 3063
+[  196.641237] 
+[  196.641237] @@@cptp---2-----panel_simple_enable
+[  196.664319] binder: undelivered death notification, 00000000ed47c2e0
+[  196.794117] binder: undelivered TRANSACTION_COMPLETE
+[  196.794603] binder: undelivered TRANSACTION_ERROR: 29189
+[  196.864851] read descriptors
+[  196.865174] read strings
+[  196.889556] type=1400 audit(1765274785.560:71): avc: denied { unlink } for comm="init" name="camera_tool" dev="tmpfs" ino=15815 scontext=u:r:init:s0 tcontext=u:object_r:socket_device:s0 tclass=sock_file permissive=1
+[  197.025798] binder: 137:137 transaction failed 29189/-22, size 100-0 line 3063
+[  197.280906] logd.control: 3 output lines suppressed due to ratelimiting
+[  197.458831] zram0: detected capacity change from 761335808 to 0
+[  197.875955] audit: type=1400 audit(1765274786.546:72): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/fb" dev="proc" ino=4026531929 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc:s0 tclass=file permissive=1
+[  197.876495] audit: audit_lost=1 audit_rate_limit=5 audit_backlog_limit=64
+[  197.877910] audit: type=1400 audit(1765274786.546:73): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/keys" dev="proc" ino=4026532112 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_keys:s0 tclass=file permissive=1
+[  197.878453] audit: rate limit exceeded
+[  197.880315] audit: type=1400 audit(1765274786.546:74): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/kmsg" dev="proc" ino=4026532035 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_kmsg:s0 tclass=file permissive=1
+[  197.882586] audit: type=1400 audit(1765274786.546:75): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/misc" dev="proc" ino=4026531930 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_misc:s0 tclass=file permissive=1
+[  197.884565] audit: type=1400 audit(1765274786.546:76): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/stat" dev="proc" ino=4026532031 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_stat:s0 tclass=file permissive=1
+[  197.886496] audit: type=1400 audit(1765274786.546:77): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/iomem" dev="proc" ino=4026532096 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_iomem:s0 tclass=file permissive=1
+[  197.888483] audit: type=1400 audit(1765274786.546:78): avc:  denied  { getattr } for  pid=2493 comm="lsof" path="/proc/locks" dev="proc" ino=4026532023 scontext=u:r:toolbox:s0 tcontext=u:object_r:proc_locks:s0 tclass=file permissive=1
+[  198.003373] lsof: COMMAND     PID       USER   FD      TYPE             DEVICE  SIZE/OFF       NODE NAME
+[  198.003373] 
+[  198.004478] lsof: init          1       root  cwd       DIR              253,0      4096          2 /
+[  198.004478] 
+[  198.005463] lsof: init          1       root  rtd       DIR              253,0      4096          2 /
+[  198.005463] 
+[  198.006442] lsof: init          1       root  txt       REG              253,0    752000        765 /system/bin/init
+[  198.006442] 
+[  198.007570] lsof: init          1       root  mem       REG              253,0    752000        765 /system/bin/init
+[  198.007570] 
+[  198.008672] lsof: init          1       root  mem       REG               0,18    131072      15372 /dev/__properties__/properties_serial
+[  198.008672] 
+[  198.009935] lsof: init          1       root  mem       REG               0,18    131072      15371 /dev/__properties__/u:object_r:wifi_prop:s0
+[  198.009935] 
+[  198.011269] lsof: init          1       root  mem       REG               0,18    131072      15370 /dev/__properties__/u:object_r:wifi_log_prop:s0
+[  198.011269] 
+[  198.012612] lsof: init          1       root  mem       REG               0,18    131072      15369 /dev/__properties__/u:object_r:vold_prop:s0
+[  198.012612] 
+[  198.013982] lsof: init          1       root  mem       REG               0,18    131072      15368 /dev/__properties__/u:object_r:vndk_prop:s0
+[  198.013982] 
+[  198.021802] sysrq: Show backtrace of all active CPUs
+[  198.022499] sysrq: Show Blocked State
+[  198.022845]   task                        PC stack   pid father
+[  198.023591] sysrq: Kill All Tasks
+[  198.129433] cpu cpu0: min=816000, max=816000
+[  198.142359] 
+[  198.142359] @@@cptp------kernel_shutdown_prepare
+[  198.157295] cpu cpu0: min=816000, max=816000
+[  198.158621] 
+[  198.158621] @@@cptp--------panel_simple_disable
+[  198.246012] mpp_vepu2 ff442000.vepu: shutdown device
+[  198.246490] mpp_vdpu2 ff442400.vdpu: shutdown device
+[  198.246947] mpp_rkvdec ff440000.hevc: shutdown device
+[  198.250081] +++++++cptp shutdow !!!+++++++++
+DDR V2.07 20220531
+In
+LP3,1024MB,333MHz
+bw      col     bk      row     cs      dbw
+32      10      8       14      2       32
+cs1 row:14
+OUT
+Boot1 Release Time: Jan 17 2022 10:48:40, version: 1.35
+ROM VER:0x56313030, 18
+hamming_distance:3326 3330 3
+chip_id:524b3326_0,0
+ChipType = 0x12, 775
+mmc2:cmd19,100
+SdmmcInit=2 0
+BootCapSize=2000
+UserCapSize=7456MB
+FwPartOffset=2000 , 2000
+SdmmcInit=0 NOT PRESENT
+StorageInit ok = 37895
+SecureMode = 0
+Secure read PBA: 0x4
+Secure read PBA: 0x404
+Secure read PBA: 0x804
+Secure read PBA: 0xc04
+Secure read PBA: 0x1004
+SecureInit ret = 0, SecureMode = 0
+atags_set_bootdev: ret:(0)
+GPT part:  0, name:         security, start:0x2000, size:0x2000
+GPT part:  1, name:            uboot, start:0x4000, size:0x2000
+GPT part:  2, name:            trust, start:0x6000, size:0x2000
+GPT part:  3, name:             misc, start:0x8000, size:0x2000
+GPT part:  4, name:             dtbo, start:0xa000, size:0x2000
+GPT part:  5, name:           vbmeta, start:0xc000, size:0x800
+GPT part:  6, name:             boot, start:0xc800, size:0x18c4b
+GPT part:  7, name:         recovery, start:0x2544b, size:0x30000
+GPT part:  8, name:           backup, start:0x5544b, size:0xc0000
+GPT part:  9, name:            cache, start:0x11544b, size:0xc0000
+GPT part: 10, name:         metadata, start:0x1d544b, size:0x8000
+GPT part: 11, name:    baseparameter, start:0x1dd44b, size:0x800
+GPT part: 12, name:             zoom, start:0x1ddc4b, size:0x5000
+GPT part: 13, name:            super, start:0x1e2c4b, size:0x4b0000
+GPT part: 14, name:         userdata, start:0x692c4b, size:0x7fd375
+find part:uboot OK. first_lba:0x4000.
+find part:trust OK. first_lba:0x6000.
+LoadTrust Addr:0x6000
+No find bl30.bin
+Load uboot, ReadLba = 4000
+Load OK, addr=0x200000, size=0xfe4c0
+RunBL31 0x40000 @ 108269 us
+INFO:    Preloader serial: 2
+NOTICE:  BL31: v2.3():v2.3-380-g244acd212:huan.he
+NOTICE:  BL31: Built : 14:34:08, Jun  8 2022
+NOTICE:  BL31:Rockchip release version: v1.0
+INFO:    ARM GICv2 driver initialized
+INFO:    Using opteed sec cpu_context!
+INFO:    boot cpu mask: 1
+INFO:    plat_rockchip_pmu_init: pd status f00e
+INFO:    BL31: Initializing runtime services
+INFO:    BL31: Initializing BL32
+I/TC: 
+I/TC: OP-TEE version: 3.13.0-641-g4167319d3 #hisping.lin (gcc version 10.2.1 20201103 (GNU Toolchain for the A-profile Architecture 10.2-2020.11 (arm-10.16))) #9 Wed Mar 16 17:44:01 CST 2022 aarch64
+I/TC: Primary CPU initializing
+I/TC: Primary CPU switching to normal world boot
+INFO:    BL31: Preparing for EL3 exit to normal world
+INFO:    Entry point address = 0x200000
+INFO:    SPSR = 0x3c9
+
+
+U-Boot 2017.09-gc64a9d0a12-220615 #penggw (Dec 09 2025 - 16:35:08 +0800)
+
+Model: Rockchip RK3326 EVB
+PreSerial: 2, raw, 0xff160000
+DRAM:  1014 MiB
+Sysmem: init
+Relocation Offset: 3db7a000
+Relocation fdt: 3bd6f120 - 3bd70cce
+CR: M/C/I
+Using default environment
+
+DM: v1
+dwmmc@ff370000: 1, dwmmc@ff390000: 0
+Best phase range 12-270 (24 len)
+Successfully tuned phase to 147, used 1ms
+Bootdev(atags): mmc 0
+MMC0: HS200, 150Mhz
+PartType: EFI
+boot mode: None
+Android 11.0, Build 2021.10, v2
+Found DTB in boot part
+DTB: rk-kernel.dtb
+HASH(c): OK
+ANDROID: fdt overlay OK
+I2c0 speed: 100000Hz
+PMIC:  RK8170 (on=0x06, off=0x08)
+vdd_logic 1100000 uV
+vdd_arm 1100000 uV
+warning: bad baseparameter
+Model: Rockchip rk3326 863 board
+@@@cptp---board_late_init,,,,,key_flag=1
