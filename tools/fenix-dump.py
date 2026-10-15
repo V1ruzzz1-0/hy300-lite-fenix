@@ -24,7 +24,7 @@ from serial.tools import list_ports
 
 # settings
 APP_NAME = "fenix-dump"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 TARGET = "HY300 Lite (fenix)"
 LOG_FILE = "fenix-dump.log"
 
@@ -40,6 +40,7 @@ ROW = 16
 WINDOW_BYTES = 32 * MIB
 OVERLAP_BYTES = 1 * MIB
 CHECKPOINT_BYTES = 1 * MIB
+BACKTRACK_LIMIT = 16 * MIB
 
 BLOCK_LEVELS = (512, 1024, 2048, 4096, 8192, 16384, 32768, 49152)
 TARGET_LOSS = 0.004
@@ -67,6 +68,10 @@ PART_LINE = re.compile(r'^\s*(\d+)\s+0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)\s+"([^"
 
 
 class TransferError(Exception):
+    pass
+
+
+class CRCMismatch(TransferError):
     pass
 
 
@@ -317,6 +322,7 @@ class Engine:
         self.block = AdaptiveBlock()
         self.lost = 0
         self.retries = 0
+        self.recovery = None
 
     def md_timeout(self, length):
         return 10.0 + (length / ROW) * 70 * 10 / self.con.baud * 6
@@ -411,7 +417,7 @@ class Engine:
             expected = self.crc(addr, length, 30.0)
         actual = zlib.crc32(data) & 0xFFFFFFFF
         if actual != expected:
-            raise TransferError("block CRC mismatch (host %08x, U-Boot %08x)" % (actual, expected))
+            raise CRCMismatch("block CRC mismatch (host %08x, U-Boot %08x)" % (actual, expected))
         return data, lost
 
     def fetch(self, addr, length):
@@ -427,10 +433,86 @@ class Engine:
                 time.sleep(0.05 * attempt)
         half = (length // 2 // ROW) * ROW
         if half < ROW or half >= length:
+            if isinstance(last, CRCMismatch):
+                raise CRCMismatch("Block at 0x%x could not be validated: %s" % (addr, last))
             raise FatalError("Block at 0x%x could not be validated: %s" % (addr, last))
         left = self.fetch(addr, half)
         right = self.fetch(addr + half, length - half)
         return left[0] + right[0], left[1] + right[1], True
+
+    def validate_partition_block(self, offset, length):
+        if (offset < 0 or length <= 0 or offset % SECTOR or length % SECTOR
+                or offset + length > self.part.size):
+            raise FatalError("Invalid CRC recovery range.")
+        sectors = length // SECTOR
+        lba = self.part.start + offset // SECTOR
+        pattern = re.compile(r"\b%d\s+blocks read:\s*OK" % sectors)
+        self.run_checked("mmc read 0x%x 0x%x 0x%x" % (self.ram, lba, sectors), 300,
+                         lambda t: bool(pattern.search(t)))
+        self.fetch(self.ram, length)
+
+    def recover_crc_mismatch(self, out, start_offset, pos, size, error):
+        failure = start_offset + pos
+        step = max(SECTOR, (size // SECTOR) * SECTOR)
+        recovery = self.recovery
+
+        if recovery and abs(failure - recovery["failure"]) <= max(step, recovery["step"]):
+            failure = recovery["failure"]
+            step = recovery["step"]
+            candidate = recovery["anchor"]
+        else:
+            self.recovery = {"failure": failure, "step": step, "anchor": failure}
+            candidate = failure - step
+
+        self.prog.event("CRC mismatch at 0x%x: %s" % (failure, error))
+        self.prog.status("CRC mismatch: searching backwards (limit 16 MiB)")
+        checked = {}
+
+        def valid(offset):
+            if offset in checked:
+                return checked[offset]
+            try:
+                self.validate_partition_block(offset, step)
+            except TransferError as exc:
+                checked[offset] = False
+                self.prog.event("CRC recovery: block 0x%x rejected: %s" % (offset, exc))
+            except FatalError as exc:
+                if "could not be validated" not in str(exc):
+                    raise
+                checked[offset] = False
+                self.prog.event("CRC recovery: block 0x%x rejected: %s" % (offset, exc))
+            else:
+                checked[offset] = True
+                self.prog.event("CRC recovery: block 0x%x validated" % offset)
+            return checked[offset]
+
+        resume = None
+        while candidate >= step:
+            previous = candidate - step
+            if failure - previous > BACKTRACK_LIMIT:
+                break
+            if valid(candidate) and valid(previous):
+                resume = previous
+                break
+            candidate -= step
+
+        if resume is None:
+            raise FatalError(
+                "CRC mismatch recovery could not find two consecutive valid blocks "
+                "within 16 MiB before partition offset 0x%x. The partial dump is not trustworthy."
+                % failure
+            )
+
+        self.recovery.update({"failure": failure, "step": step, "anchor": resume})
+        self.prog.event("CRC recovery: rewinding from 0x%x to 0x%x" % (self.offset, resume))
+        out.flush()
+        out.truncate(resume)
+        out.seek(resume)
+        self.offset = resume
+        self.checkpoint(out)
+        self.resumed = True
+        self.prog.hist = deque([(time.monotonic(), self.offset)])
+        self.prog.update(self.offset, self.block.size, self.lost, self.retries, self.con.resyncs)
 
     def save_state(self):
         tmp = Path(str(self.statef) + ".tmp")
@@ -484,7 +566,19 @@ class Engine:
         while pos < length:
             size = min(self.block.size, length - pos)
             began = time.monotonic()
-            data, lost, failed = self.fetch(base + pos, size)
+            try:
+                data, lost, failed = self.fetch(base + pos, size)
+            except CRCMismatch as exc:
+                self.recover_crc_mismatch(out, start_offset, pos, size, exc)
+                return
+            # Clear stale retry/error text after a block is fetched successfully.
+            if self.prog.event_text != "-":
+                self.prog.event_text = "-"
+            absolute_pos = start_offset + pos
+            if (self.recovery
+                    and absolute_pos < self.recovery['failure'] + self.recovery['step']
+                    and absolute_pos + size > self.recovery['failure']):
+                self.recovery = None
             elapsed = time.monotonic() - began
             out.write(data)
             crc = zlib.crc32(data, crc)
