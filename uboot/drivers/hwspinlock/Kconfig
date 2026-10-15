@@ -1,0 +1,34 @@
+menu "Hardware Spinlock Support"
+
+config DM_HWSPINLOCK
+	bool "Enable Hardware Spinlock using Driver Model"
+	depends on DM && OF_CONTROL
+	help
+	  Enable support for the Hardware Spinlock driver class.
+	  The Hardware Spinlock module provides hardware assistance for
+	  synchronizing the processes running on multiple processors in the device.
+
+config SPL_DM_HWSPINLOCK
+	bool "Enable Hardware Spinlock using Driver Model in SPL"
+	depends on SPL_DM && SPL_OF_CONTROL
+	help
+	  Enable support for the Hardware Spinlock driver class in SPL.
+	  The Hardware Spinlock module provides hardware assistance for
+	  synchronizing the processes running on multiple processors in the device.
+
+config HWSPINLOCK_ROCKCHIP
+	bool "Rockchip Hardware Spinlock device"
+	depends on DM_HWSPINLOCK && ARCH_ROCKCHIP
+	help
+	  Say y here to support the Rockchip Hardware Spinlock device, which
+	  provides a synchronisation mechanism for the various processors
+	  on the SoC.
+
+config SPL_HWSPINLOCK_ROCKCHIP
+	bool "Rockchip Hardware Spinlock device in SPL"
+	depends on SPL_DM_HWSPINLOCK && ARCH_ROCKCHIP
+	help
+	  Say y here to support the Rockchip Hardware Spinlock device in SPL,
+	  which provides a synchronisation mechanism for the various processors
+	  on the SoC.
+endmenu
