@@ -1,5 +1,5 @@
-# Kernel artifacts
-/kernel/out/
+# Kernel build artifacts (objects, modules, symbols, out directories)
+/kernel/*/out/
 *.o
 *.ko
 *.mod
@@ -13,10 +13,21 @@ vmlinux
 # Local Android properties dump (contains network-specific information)
 /docs/dumps-txt/getprop.txt
 
-# fenix-dump runtime artifacts
-/tools/fenix-dump.log
+# Tool runtime artifacts (logs, flash state, dumped images, caches)
 /tools/__pycache__/
 /tools/**/*.py[cod]
+/tools/*.log
+/tools/fenix-flash-*.state*
 /tools/**/*.img
 /tools/**/*.img.sha256
 /tools/**/*.img.part*
+
+# Manual backups (created while editing files)
+*.bak
+
+# Firmware temporary workspace (for extract, modified files, etc)
+/firmware/work/
+
+# TEMPORARY: build.sh is still being prepared (not ready to be published)
+# Remove this block once the script is finished
+/kernel/kernel-rebuild/build.sh

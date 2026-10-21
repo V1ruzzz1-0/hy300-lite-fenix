@@ -24,7 +24,7 @@ from serial.tools import list_ports
 
 # settings
 APP_NAME = "fenix-dump"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 TARGET = "HY300 Lite (fenix)"
 LOG_FILE = "fenix-dump.log"
 
@@ -61,6 +61,11 @@ EST_RATE = 26 * 1024
 LONG_DUMP_SECONDS = 2 * 3600
 SPEED_WINDOW_S = 15
 UI_REFRESH = 0.25
+POPUP_SECONDS = 5
+
+ROOT_NOTICE = ("fenix-dump is recommended to run as root (su or sudo).",
+               "Root always has access to the USB-TTL adapter and can write to any output folder.",
+               "Without it, adapters and folders you cannot access will be refused.")
 
 MD_LINE = re.compile(r"^([0-9a-fA-F]{8,16}): ((?:[0-9a-fA-F]{8} ){3}[0-9a-fA-F]{8})( +.*)$")
 CRC_LINE = re.compile(r"==>\s*([0-9a-fA-F]{8})[ \t]*$", re.M)
@@ -108,6 +113,10 @@ def fmt_time(seconds):
 
 def ascii_col(raw):
     return "".join(chr(b) if 0x20 <= b < 0x7F else "." for b in raw)
+
+
+def is_root():
+    return os.geteuid() == 0
 
 
 def parse_rows(text, base, length):
@@ -323,6 +332,12 @@ class Engine:
         self.lost = 0
         self.retries = 0
         self.recovery = None
+        self.part = None
+        self.partf = None
+        self.statef = None
+        self.offset = 0
+        self.last_ckpt = 0
+        self.resumed = False
 
     def md_timeout(self, length):
         return 10.0 + (length / ROW) * 70 * 10 / self.con.baud * 6
@@ -635,11 +650,13 @@ class Engine:
 
 
 # terminal ui
-def read_key():
+def read_key(timeout=None):
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     try:
         tty.setcbreak(fd)
+        if timeout is not None and not select.select([fd], [], [], timeout)[0]:
+            return None
         key = os.read(fd, 1)
         if key == b"\x1b" and select.select([fd], [], [], 0.05)[0]:
             key += os.read(fd, 2)
@@ -701,6 +718,18 @@ class UI:
             print("  " + line)
         print()
         self.wait_enter()
+
+    def notice(self, title, lines, seconds=POPUP_SECONDS):
+        self.show_cursor()
+        self.banner()
+        print("  " + self.paint(title, "1", "33"))
+        print()
+        for line in lines:
+            print("  " + line)
+        print()
+        if self.tty:
+            print(self.paint("  Continuing in %d seconds (press any key to skip)" % seconds, "2"))
+            read_key(seconds)
 
     def task(self, label, func):
         sys.stdout.write("  %s ... " % label)
@@ -778,8 +807,13 @@ class Progress:
         self.status_text = ""
         self.event_text = "-"
         self.last_draw = 0.0
+        self.last_plain = 0.0
         self.panel_lines = 0
         self.done = self.block = self.lost = self.retries = self.resyncs = 0
+        self.start_done = 0
+        self.total = 1
+        self.part = None
+        self.final = None
         self.t0 = time.monotonic()
         self.hist = deque()
 
@@ -1217,7 +1251,11 @@ def session(ui, args, engine, prog, out_dir):
         ])
         last = min(choice + 1, max(0, len(parts) - 1))
 
+
 def app(ui, args):
+    if not is_root():
+        ui.notice("Running without root privileges", ROOT_NOTICE)
+
     out_dir = Path(args.out_dir).expanduser().resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1233,7 +1271,7 @@ def app(ui, args):
     device = devices[choice][0]
     if not os.access(device, os.R_OK | os.W_OK):
         ui.message("Permission denied", ["Cannot access %s." % device,
-                                         "Add your user to the group that owns it (uucp or dialout) and log in again."], error=True)
+                                         "Run as root, or add your user to the group that owns it (uucp or dialout) and log in again."], error=True)
         return 1
     if not ui.confirm("Use %s at %d baud?" % (device, args.baud),
                       ["Stop the projector at the U-Boot prompt (%s) before continuing." % PROMPT]):
@@ -1260,10 +1298,12 @@ def command_app(args, ui):
     skipped = []
     batch = False
     try:
+        if not is_root():
+            print("Warning: %s" % " ".join(ROOT_NOTICE), file=sys.stderr)
         if not os.path.exists(args.adapter):
             raise FatalError("Serial adapter does not exist: %s" % args.adapter)
         if not os.access(args.adapter, os.R_OK | os.W_OK):
-            raise FatalError("Cannot access %s. Check the device permissions." % args.adapter)
+            raise FatalError("Cannot access %s. Run as root or check the device permissions." % args.adapter)
 
         print("%s %s - command-only mode" % (APP_NAME, APP_VERSION))
         print("Opening %s at %d baud..." % (args.adapter, args.baud))
@@ -1404,6 +1444,7 @@ def command_app(args, ui):
         if con is not None:
             con.close()
 
+
 def print_help():
     print("""fenix-dump %s
 
@@ -1431,7 +1472,9 @@ Examples:
   python fenix-dump.py -a /dev/ttyACM0 --all-partitions -o ./dump
   python fenix-dump.py -a /dev/ttyACM0 -p uboot --restart
 
-With no arguments, this help is shown. Use 'cli' to open the interactive interface.""" % (APP_VERSION, BAUD, RAM_ADDR))
+With no arguments, this help is shown. Use 'cli' to open the interactive interface.
+Running as root (su or sudo) is recommended.""" % (APP_VERSION, BAUD, RAM_ADDR))
+
 
 def parse_args():
     argv = sys.argv[1:]
@@ -1508,6 +1551,7 @@ def parse_args():
             parser.error("specify one of -p/--partition, -l/--list-partitions, or --all-partitions")
 
     return args
+
 
 def main():
     args = parse_args()
